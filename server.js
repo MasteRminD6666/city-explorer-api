@@ -4,7 +4,7 @@ const cors = require('cors');
 const server = express();
 const weather = require('./post/weather.json');
 server.use(cors())
-const PORT = 3000;
+
 
 server.get('/weather',(request,res) => {
     // const lat = request.query.lat
