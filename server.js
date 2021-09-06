@@ -30,9 +30,7 @@ server.get('/weather', (request, res) => {
 
 
 })
-server.get('*', () => {
 
-})
 server.listen(PORT, () => {
   console.log(`hello on ${PORT} `);
 })
