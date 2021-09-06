@@ -2,36 +2,43 @@
 const express = require('express');
 const cors = require('cors');
 const server = express();
-const weather = require('./post/weather.json');
+server.use(cors());
 require('dotenv').config();
-server.use(cors())
+const weatherData = require('./post/weather.json');
 const PORT = process.env.PORT;
 
-server.get('/weather', (request, res) => {
-  const cityName = request.query.cityName
-  const lat = request.query.lat
-  const lon = request.query.lon
 
-  const postData = []
-  let names = weather.map((element, indx) => {
-    if (element.city_name === cityName) {
-      postData.push(element["data"][indx].weather.description)
-      postData.push(element["data"][indx].datetime)
-      postData.push(element["data"][indx].wind_cdir)
-    }
-
-
-    return element
-
-  })
-  res.send(postData)
-
-
-
-})
-server.get('*', () => {
-
-})
 server.listen(PORT, () => {
-  console.log(`hello on ${PORT} `);
+console.log(`Working ${PORT}`);
+})
+
+class Weather {
+    constructor(date, description,wind) {
+        this.date = date;
+        this.description = description;
+        this.wind=wind
+    }
+}
+
+server.get('/weather', (request, res) => {
+    let cityName = request.query.searchQuery;
+    let lat =request.query.lat;
+    let lon = request.query.long;
+    let date;
+    let description;
+    let weatherPost;
+    let wind; 
+    let JsonData = weatherData.find((element) => element )
+            
+       let postArray = [];
+        for(let i=0;i<JsonData.data.length;i++){
+            wind = JsonData.data[i].wind_cdir;
+            date = JsonData.data[i].valid_date;
+            description=JsonData.data[i].weather.description;
+            weatherPost = new Weather(date,description,wind);
+            postArray.push(weatherPost);
+        }
+        
+        res.send(postArray);
+   
 })
