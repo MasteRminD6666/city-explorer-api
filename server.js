@@ -6,6 +6,7 @@ const weather = require('./post/weather.json');
 require('dotenv').config();
 server.use(cors())
 const PORT = process.env.PORT;
+// port for hero
 
 server.get('/weather', (request, res) => {
   const cityName = request.query.cityName
