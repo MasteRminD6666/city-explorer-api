@@ -19,26 +19,29 @@ class Weather {
         this.wind=wind
     }
 }
-
+// localhost:3000/weather?cityName=Amman&lat=31.9515694&lon=35.9239625
+// checked the calss from malak code and i got the idea then i re write it thats a small note 
 server.get('/weather', (request, res) => {
-    let cityName = request.query.searchQuery;
+    let cityName = request.query.cityName;
     let lat =request.query.lat;
     let lon = request.query.long;
     let date;
     let description;
     let weatherPost;
     let wind; 
-    let JsonData = weatherData.find((element) => element )
-            
-       let postArray = [];
-        for(let i=0;i<JsonData.data.length;i++){
-            wind = JsonData.data[i].wind_cdir;
-            date = JsonData.data[i].valid_date;
-            description=JsonData.data[i].weather.description;
-            weatherPost = new Weather(date,description,wind);
-            postArray.push(weatherPost);
-        }
-        
-        res.send(postArray);
+    let JsonData = weatherData.find((element) =>element)
+    
+    let postArray = [];
+    for(let i=0;i<JsonData.data.length;i++){
+        wind = JsonData.data[i].wind_cdir;
+        date = JsonData.data[i].valid_date;
+        description=JsonData.data[i].weather.description;
+        weatherPost = new Weather(date,description,wind);
+        postArray.push(weatherPost);
+    }
+    res.send(JsonData.data.city_name);
+    
+    res.send(postArray);
+       
    
 })
