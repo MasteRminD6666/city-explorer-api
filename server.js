@@ -39,7 +39,7 @@ server.get('/weather', (request, res) => {
         weatherPost = new Weather(date,description,wind);
         postArray.push(weatherPost);
     }
-    res.send(JsonData.data.city_name);
+
     
     res.send(postArray);
        
