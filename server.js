@@ -19,7 +19,7 @@ server.listen(PORT, () => {
 
 
 server.get('/weather',getWeather)
-server.get('/moives',getMoives)
+server.get('/movies',getMoives)
         
         
         
@@ -30,8 +30,8 @@ function getWeather(request,res){
     let cityName = request.query.city;
     let lat =request.query.lat;
     let lon = request.query.long;
-    const weatherUrl = `https://api.weatherbit.io/v2.0/current?city=${cityName}&key=${weatherKey}` // for the weather Api
-    // const staticTest =  'https://api.weatherbit.io/v2.0/current?city=Amman&key=168d610fd998433db367d495f37fd06a'
+    const weatherUrl = `https://api.weatherbit.io/v2.0/current?city=${cityName}&key=${weatherKey}&lat=${lat}&lon=${lon}` // for the weather Api
+    // const staticTest =  'https://api.weatherbit.io/v2.0/current?city=Amman&key=168d610fd998433db367d495f37fd06a&lat=31.9515694&lon=35.9239625'
     axios
     .get(weatherUrl)
     .then(weatherResult=>{
@@ -47,7 +47,7 @@ function getWeather(request,res){
     })
     
     .catch(err => {
-        err.status(404).send('error');
+        console.log('error');
     })
     
     
@@ -65,16 +65,17 @@ function Weather(item){
 
 function getMoives(request,res){
     let cityName = request.query.city;
-    const moivesUrl = `https://api.themoviedb.org/3/movie/550?api_key=${MoiveKey}&city=${cityName}`;
-    const arryOfMoive = []
+    const moviesUrl = `https://api.themoviedb.org/3/movie/top_rated?api_key=${MoiveKey}`;
+    // https://api.themoviedb.org/3/movie/550?city=Amman
+
     axios
-    .get(moivesUrl)
-    .then(moivesResult=>{
-        arryOfMoive.push(moivesResult.data)
-        let postedMoives = arryOfMoive.map(moive=>{
-            return new Moives(moive)
+    .get(moviesUrl)
+    .then(moviesResult=>{
+    
+        let moviesArray=moviesResult.data.results.map(movie=>{
+            return new Moives(movie)
         })
-        res.send(postedMoives)
+        res.send(moviesArray)
     })
 
     
@@ -84,14 +85,14 @@ function getMoives(request,res){
 
 }
     
-function Moives(moive){
-this.title = moive.original_title
-this.overview =moive.overview
-this.average_votes =moive.vote_average
-this.total_votes =moive.vote_count
-this.image_url =moive.backdrop_path
-this.popularity =moive.popularity
-this.released_on =moive.release_date
+function Moives(movie){
+this.title = movie.original_title
+this.overview =movie.overview
+this.average_votes =movie.vote_average
+this.total_votes =movie.vote_count
+this.image_url =movie.backdrop_path
+this.popularity =movie.popularity
+this.released_on =movie.release_date
 }     
     
 server.get('*',(req,res) => {
