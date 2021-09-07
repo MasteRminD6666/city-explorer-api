@@ -12,7 +12,10 @@ const MoiveKey= process.env.movieKey;
 
 
 
-
+    
+server.listen(PORT, () => {
+    console.log(`Working ${PORT}`);
+    })
 
 
 server.get('/weather',getWeather)
@@ -91,7 +94,9 @@ this.popularity =moive.popularity
 this.released_on =moive.release_date
 }     
     
-    
-server.listen(PORT, () => {
-    console.log(`Working ${PORT}`);
-    })
+server.get('*',(req,res) => {
+  res.status(404).send({
+      code: 404,
+      message: 'Not Found'
+  })
+})
