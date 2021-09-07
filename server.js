@@ -47,7 +47,7 @@ function getWeather(request,res){
     })
     
     .catch(err => {
-        console.log('error');
+        err.status(404).send('error');
     })
     
     
@@ -61,7 +61,7 @@ function Weather(item){
     this.wind_cdir=item.wind_cdir
     this.description = `Low of ${item.vis} high of ${item.temp} with${item.weather.description}`
 }  
-
+// https://api.themoviedb.org/3/movie/550?api_key=a715cc8a3e6c96dac242352c09885fa5MoiveKey&city=Amman
 
 function getMoives(request,res){
     let cityName = request.query.city;
