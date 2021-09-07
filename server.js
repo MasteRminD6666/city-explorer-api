@@ -1,47 +1,97 @@
 'use strict';
+//Global
 const express = require('express');
-const cors = require('cors');
 const server = express();
-server.use(cors());
 require('dotenv').config();
-const weatherData = require('./post/weather.json');
+const cors = require('cors');
+server.use(cors());
+const axios = require('axios');
 const PORT = process.env.PORT;
+const weatherKey= process.env.Key;
+const MoiveKey= process.env.movieKey;
 
 
-server.listen(PORT, () => {
-console.log(`Working ${PORT}`);
-})
 
-class Weather {
-    constructor(date, description,wind) {
-        this.date = date;
-        this.description = description;
-        this.wind=wind
-    }
-}
-// localhost:3000/weather?cityName=Amman&lat=31.9515694&lon=35.9239625
-// checked the calss from malak code and i got the idea then i re write it thats a small note 
-server.get('/weather', (request, res) => {
-    let cityName = request.query.cityName;
+
+
+
+server.get('/weather',getWeather)
+server.get('/moives',getMoives)
+        
+        
+        
+        
+        
+  
+function getWeather(request,res){
+    let cityName = request.query.city;
     let lat =request.query.lat;
     let lon = request.query.long;
-    let date;
-    let description;
-    let weatherPost;
-    let wind; 
-    let JsonData = weatherData.find((element) =>element)
+    const weatherUrl = `https://api.weatherbit.io/v2.0/current?city=${cityName}&key=${weatherKey}` // for the weather Api
+    // const staticTest =  'https://api.weatherbit.io/v2.0/current?city=Amman&key=168d610fd998433db367d495f37fd06a'
+    axios
+    .get(weatherUrl)
+    .then(weatherResult=>{
+       let citycollection = weatherResult.data.data.map((item) => {
+            
+            return new Weather(item)
+    })
+    res.send(citycollection)
+       
+    //    console.log(weatherResult.data);
+    //    return collect2.push(weatherResult.data)
+
+    })
     
-    let postArray = [];
-    for(let i=0;i<JsonData.data.length;i++){
-        wind = JsonData.data[i].wind_cdir;
-        date = JsonData.data[i].valid_date;
-        description=JsonData.data[i].weather.description;
-        weatherPost = new Weather(date,description,wind);
-        postArray.push(weatherPost);
-    }
+    .catch(err => {
+        console.log('error');
+    })
+    
+    
+}
+
+
+function Weather(item){
+    this.datetime= item.datetime
+    this.timezone=item.timezone
+    this.country_code=item.country_code
+    this.wind_cdir=item.wind_cdir
+    this.description = `Low of ${item.vis} high of ${item.temp} with${item.weather.description}`
+}  
+
+
+function getMoives(request,res){
+    let cityName = request.query.city;
+    const moivesUrl = `https://api.themoviedb.org/3/movie/550?api_key=${MoiveKey}&city=${cityName}`;
+    const arryOfMoive = []
+    axios
+    .get(moivesUrl)
+    .then(moivesResult=>{
+        arryOfMoive.push(moivesResult.data)
+        let postedMoives = arryOfMoive.map(moive=>{
+            return new Moives(moive)
+        })
+        res.send(postedMoives)
+    })
 
     
-    res.send(postArray);
-       
-   
-})
+    .catch(err => {
+        console.log('error');
+    })
+
+}
+    
+function Moives(moive){
+this.title = moive.original_title
+this.overview =moive.overview
+this.average_votes =moive.vote_average
+this.total_votes =moive.vote_count
+this.image_url =moive.backdrop_path
+this.popularity =moive.popularity
+this.released_on =moive.release_date
+}     
+    
+    
+server.listen(PORT, () => {
+    console.log(`Working ${PORT}`);
+    })
