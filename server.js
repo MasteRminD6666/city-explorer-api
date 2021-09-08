@@ -4,11 +4,11 @@ const express = require('express');
 const server = express();
 require('dotenv').config();
 const cors = require('cors');
-server.use(cors());
 const axios = require('axios');
 const PORT = process.env.PORT;
-const weatherKey= process.env.Key;
+const weatherKey= process.env.weather_api_Key;
 const MoiveKey= process.env.movieKey;
+server.use(cors());
 
 
 
